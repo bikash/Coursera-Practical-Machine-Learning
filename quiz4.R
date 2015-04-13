@@ -139,3 +139,28 @@ predComb$in95 <- (predComb$Lo.95 < predComb$visitsTumblr) & (predComb$visitsTumb
 prop.table(table(predComb$in95)) # 0.9617021
 
 # Question 5
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data(concrete)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+
+set.set(325)
+## Set the seed to 325 and fit a support vector machine using the e1071 package to predict Compressive Strength using the default settings. 
+## Predict on the testing set. What is the RMSE?
+library(e1071)
+
+library(hydroGOF) ## RMSE
+## SVM
+model <- svm(CompressiveStrength~., data=training) 
+print(model)
+summary(model) #print summary
+
+# test on the whole set
+pred <- predict(model, testing)
+
+rmse(pred,testing$CompressiveStrength) 
+###  6.715009
+
+
