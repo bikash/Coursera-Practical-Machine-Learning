@@ -46,3 +46,48 @@ accuracy <- sum(predRf[pred$agree] == pred$y[pred$agree]) / sum(pred$agree)
 accuracy # Agreement Accuracy: 0.6569579
 
 
+### Question 2
+library(caret)
+library(gbm)
+set.seed(3433)
+library(AppliedPredictiveModeling)
+data(AlzheimerDisease)
+adData = data.frame(diagnosis,predictors)
+inTrain = createDataPartition(adData$diagnosis, p = 3/4)[[1]]
+training = adData[ inTrain,]
+testing = adData[-inTrain,]
+set.seed(62433)
+
+
+## random Forest
+fitRf <- train(diagnosis ~ ., data=training, method="rf")
+## gradient boosting machine
+fitgbm <- train(diagnosis ~ ., data=training, method="gbm")
+## linear discrimental analysis
+fitlda <- train(diagnosis ~ ., data=training, method="lda")
+
+## Prediction
+predRf <- predict(fitRf, testing)
+predGBM <- predict(fitgbm, testing)
+predLDA <- predict(fitlda, testing)
+
+## combine
+df_combined <- data.frame(predRf, predGBM, predLDA, diagnosis = testing$diagnosis) # training$diagnosis?
+
+fit_combined <- train(diagnosis ~ ., data = df_combined, method = "rf")
+predict_final <- predict(fit_combined, newdata = testing)
+
+# confusion matrixes
+c1 <- confusionMatrix(predRf, testing$diagnosis) ## 0.7926829 
+c2 <- confusionMatrix(predGBM, testing$diagnosis)
+c3 <- confusionMatrix(predLDA, testing$diagnosis) ## 0.7682927 
+c4 <- confusionMatrix(predict_final, testing$diagnosis)
+
+print(paste(c1$overall[1], c2$overall[1], c3$overall[1], c4$overall[1]))
+# Stacked Accuracy: 0.79 is better than random forests and lda 
+# and the same as boosting.
+
+
+## Quesiton 3
+
+
