@@ -111,4 +111,31 @@ plot.enet(fit$finalModel, xvar="penalty", use.color=T)
 # https://d396qusza40orc.cloudfront.net/predmachlearn/gaData.csv
 
 
+setwd("/Users/bikash/repos/Coursera-Practical-Machine-Learning/")
 
+library(lubridate)  # For year() function below
+library(forecast) ## bats() fnction
+dat = read.csv("data/gaData.csv")
+training = dat[year(dat$date) < 2012,]
+testing = dat[(year(dat$date)) > 2011,]
+tstrain = ts(training$visitsTumblr)
+
+## Fit a model using the bats() function in the forecast package to the training time series. 
+# Then forecast this model for the remaining time points. For how many of the testing points is the true value within the 95% prediction interval bounds?
+
+fit <- bats(tstrain)
+
+pred <- forecast(fit, level=95, h=dim(testing)[1])
+plot(pred)
+# get the accuracy
+accuracy(pred, testing$visitsTumblr)
+
+
+predComb <- cbind(testing, data.frame(pred))
+
+predComb$in95 <- (predComb$Lo.95 < predComb$visitsTumblr) & (predComb$visitsTumblr < predComb$Hi.95)
+# How many of the testing points is the true value within the 
+# 95% prediction interval bounds?
+prop.table(table(predComb$in95)) # 0.9617021
+
+# Question 5
