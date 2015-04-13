@@ -89,5 +89,26 @@ print(paste(c1$overall[1], c2$overall[1], c3$overall[1], c4$overall[1]))
 
 
 ## Quesiton 3
+set.seed(3523)
+library(AppliedPredictiveModeling)
+data(concrete)
+inTrain = createDataPartition(concrete$CompressiveStrength, p = 3/4)[[1]]
+training = concrete[ inTrain,]
+testing = concrete[-inTrain,]
+
+## Set the seed to 233 and fit a lasso model to predict Compressive Strength. 
+# Which variable is the last coefficient to be set to zero as the penalty increases? (Hint: it may be useful to look up ?plot.enet).
+set.seed(233)
+fit <- train(CompressiveStrength ~ ., data=training, method="lasso")
+fit
+
+plot.enet(fit$finalModel, xvar="penalty", use.color=T) 
+# Cement
+
+
+# Question 4
+## Load the data on the number of visitors to the instructors blog from here: 
+# https://d396qusza40orc.cloudfront.net/predmachlearn/gaData.csv
+
 
 
