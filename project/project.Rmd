@@ -38,12 +38,13 @@ train <- train[,which(NA_d == 0)]
 NA_d <- apply(test,2,function(x) {sum(is.na(x))}) 
 test <- test[,which(NA_d == 0)]
 ```
+The first 7 column are unimportant. so, we removed it from the datasets. Then removing all NA values of data.
 
 ## Cross Validation
 
-Cross validation is achieved by splitting the training data into a test set and a training set. 80% training set and 20% testing set using the following:
+Data Partition is achieved by splitting the training data into a test set and a training set. 80% training set and 20% testing set using the following:
 
-```{r cross_validate}
+```{r}
 data_part <- createDataPartition(y=train$classe, p=0.80, list=FALSE )
 training <- train[data_part,]
 testing <- train[-data_part,]
@@ -79,6 +80,7 @@ test1 <- test1[,nzVar$nzv==FALSE]
 
 The random forest model was initially used to prediction. We have created error estimation at first to check whether the random forest accuracy can be achived or not.
 
+Running random forest on 80% training data and 20% testing data.
 ```{r}
 RF<-randomForest(as.factor(training$classe) ~.,data = training[,-53],importance = TRUE)
 pred_rf<-predict(RF,testing)
@@ -86,65 +88,49 @@ pred_rf<-predict(RF,testing)
 
 ```{r}
 CM<-confusionMatrix(pred_rf,testing$classe)
+CM
 CM$overall  
 ```
 
-```{r}
-Confusion Matrix and Statistics
 
-          Reference
-Prediction    A    B    C    D    E
-         A 1116    1    0    0    0
-         B    0  757    7    0    0
-         C    0    1  677    7    0
-         D    0    0    0  636    4
-         E    0    0    0    0  717  
-
-Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull AccuracyPValue  McnemarPValue 
-     0.9949019      0.9935511      0.9921373      0.9968832      0.2844762      0.0000000            NaN 
-
-```
-
-Now applying model to preprocessed data
+Now, run the same model for preprocessed data
 ```{r}
 processRF<-randomForest(as.factor(train1$classe) ~.,data = train1[,predVar],importance = TRUE)
 predictRF<-predict(processRF,test1)
-
 ```
 
 ```{r}
 CM1 <- confusionMatrix(predictRF,test1$classe)
+CM1
 CM1$overall 
 ```
-Output
-```{r}
- Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull AccuracyPValue  McnemarPValue 
-     0.9946470      0.9932286      0.9918289      0.9966834      0.2844762      0.0000000            NaN 
-```
+
+
 
 ## Calculate accuracy percentage
 ```{r}
 CM$overall[1]-CM1$overall[1] 
-0.000254907 
 ```
 
 
 ### Final Prediction model
+Now we run final prediction model on full datasets. In random forest the error does decrease with the number of trees. The following plot shows the training error vs number of trees.
+
 ```{r}
 finalRF<-randomForest(as.factor(train$classe) ~.,data = train,importance = TRUE)
+print(plot(finalRF,main="Error vs No. of trees"))
 finalRF.pred<-predict(finalRF,test)
 finalRF.pred
 ```
+
 
 ### Variable Importance
 ```{r }
 print(plot(varImp(finalRF, scale = FALSE)))
 ```
 
+The figure shows the importance variable used for classe (A,B,C,D,E).
 
-```{r echo=FALSE, comment=""}
-cat("![](fig2var.jpeg)")
-```
 
 
 ## Conclusion

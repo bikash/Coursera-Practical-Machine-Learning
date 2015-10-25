@@ -72,7 +72,9 @@ finalRF.pred<-predict(finalRF,test)
 finalRF.pred
 
 
-require(knitr) # required for knitting from rmd to md
-require(markdown) # required for md to html 
-knitr::knit2html('project.Rmd')
+
+## convert project rmd file to html file 
+# require(knitr) # required for knitting from rmd to md
+# require(markdown) # required for md to html 
+# knitr::knit2html('project.Rmd')
 
