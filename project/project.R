@@ -72,6 +72,9 @@ finalRF.pred<-predict(finalRF,test)
 finalRF.pred
 
 
+##Submission to Coursera
+## Write submission files to assignment folder.
+
 
 pml_write_files = function(x){
   n = length(x)
