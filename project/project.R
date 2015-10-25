@@ -73,6 +73,20 @@ finalRF.pred
 
 
 
+pml_write_files = function(x){
+  n = length(x)
+  path <- "assignment/"
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=file.path(path, filename),quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+
+pml_write_files( as.character(finalRF.pred))
+
+
+
 ## convert project rmd file to html file 
 # require(knitr) # required for knitting from rmd to md
 # require(markdown) # required for md to html 
