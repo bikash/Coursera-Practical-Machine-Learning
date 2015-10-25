@@ -297,27 +297,6 @@ train1$classe &lt;- training$classe
 test1$classe &lt;- testing$classe
 </code></pre>
 
-<h2>Removal of zero variance</h2>
-
-<p>Check for near zero variance. Removing all data which are near to zero covariance.</p>
-
-<pre><code class="r">nzVar &lt;- nearZeroVar(train1, saveMetrics=TRUE)
-if (any(nzVar$nzv)) nzVar else message(&quot;No variables with near zero variance&quot;)
-</code></pre>
-
-<pre><code>## No variables with near zero variance
-</code></pre>
-
-<pre><code class="r">train1 &lt;- train1[,nzVar$nzv==FALSE]
-nzVar &lt;- nearZeroVar(test1, saveMetrics=TRUE)
-if (any(nzVar$nzv)) nzVar else message(&quot;No variables with near zero variance&quot;)
-</code></pre>
-
-<pre><code>## No variables with near zero variance
-</code></pre>
-
-<pre><code class="r">test1 &lt;- test1[,nzVar$nzv==FALSE]
-</code></pre>
 
 <h2>Prediction</h2>
 
