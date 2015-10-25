@@ -136,3 +136,24 @@ The figure shows the importance variable used for classe (A,B,C,D,E).
 ## Conclusion
 
 The random forest algorithm appears to fit very well for predicting activities from accelerometers measurements.
+
+
+
+## Submission of programming assignment for 20 different test cases is explained below:
+Code is provided by Coursera. Using this code and prediction result from the above results.
+```{r }
+pml_write_files = function(x){
+  n = length(x)
+  path <- "assignment/"
+  for(i in 1:n){
+    filename = paste0("problem_id_",i,".txt")
+    write.table(x[i],file=file.path(path, filename),quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+
+```
+
+Converting prediction result to character in 20 different test cases and using coursera assignment code we created 20 different file for problem.
+```{r }
+pml_write_files( as.character(finalRF.pred))
+```
