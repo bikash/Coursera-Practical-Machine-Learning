@@ -1,9 +1,6 @@
-library(data.table)
+
 library(caret)
-library(ggplot2)
 library(doMC)
-library(knitr)
-library(xtable)
 library(randomForest)
 
 registerDoMC(cores = 4)
@@ -30,12 +27,17 @@ VartoInclude <- names(train)
 predVar <- predVar[1:52]
 
 set.seed(1234)
-## preprocess
-class <- which(lapply(train, class) %in% "numeric")
+## divide data into training and testing data. 80% training data and 20% testing data
+data_part <- createDataPartition(y=train$classe, p=0.80, list=FALSE )
+training <- train[data_part,]
+testing <- train[-data_part,]
 
-preProc<-preProcess(train[,class])
-train1<-predict(preProc,train[,class])
-test1<-predict(preProc,test)
+## preprocess
+preProc<-preProcess(training[,-53])
+train1<-predict(preProc,training[,-53])
+test1<-predict(preProc,testing[,-53])
+train1$classe <- training$classe
+test1$classe <- testing$classe
 
 ## check for values near zero
 nzVar <- nearZeroVar(train1, saveMetrics=TRUE)
@@ -45,15 +47,32 @@ nzVar <- nearZeroVar(test1, saveMetrics=TRUE)
 if (any(nzVar$nzv)) nzVar else message("No variables with near zero variance")
 test1 <- test1[,nzVar$nzv==FALSE]
 
-## divide data into training and testing data. 80% training data and 20% testing data
-data_part <- createDataPartition(y=train$classe, p=0.80, list=FALSE )
-training <- data[data_part,]
-testing <- data[-data_part,]
+
+## training with full data
+RF<-randomForest(as.factor(training$classe) ~.,data = training[,predVar],importance = TRUE)
+pred_rf<-predict(RF,testing)
+
+CM<-confusionMatrix(pred_rf,testing$classe)
+CM$overall  # Accuracy 0.994
+
+plot(RF,main="Error vs # of trees")
+
+## traning with pre-process data
+processRF<-randomForest(as.factor(train1$classe) ~.,data = train1[,predVar],importance = TRUE)
+predictRF<-predict(processRF,test1)
+CM1 <- confusionMatrix(predictRF,test1$classe)
+CM1$overall  # Accuracy 0.9946470
+
+## Accuracy percentage
+CM$overall[1]-CM1$overall[1] ##0.000254907 
+
+## final model
+finalRF<-randomForest(as.factor(train$classe) ~.,data = train,importance = TRUE)
+finalRF.pred<-predict(finalRF,test)
+finalRF.pred
 
 
+require(knitr) # required for knitting from rmd to md
+require(markdown) # required for md to html 
+knitr::knit2html('project.Rmd')
 
-RF<-randomForest(train$classe ~.,data = train[,predVar],importance = TRUE)
-pred_rf<-predict(RF,test1)
-
-CM<-confusionMatrix(RF,test$classe)
-CM$overall
