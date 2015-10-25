@@ -15,8 +15,8 @@ setwd("/Users/bikash/repos/Coursera-Practical-Machine-Learning/project/")
 ```
 First step is to process the data
 1.  Read the data.
-2.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
-3.  Convert empty strings to `NA` values.
+1.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
+1.  Convert empty strings to `NA` values.
 
 ```{r loaddata}
 print("Loading Data...")
@@ -30,7 +30,7 @@ The next task is to explore the data and determine what is likely useful informa
 
 1.  Any features that contained NA values should be removed.
 1.  Some columns are dropped as any correlation that exists would likely be spurious and therefore cause the model to perform poorly.
-```{r remove}
+```{r}
 train<-train[,-seq(1:7)]
 test<-test[,-seq(1:7)]
 NA_d <- apply(train,2,function(x) {sum(is.na(x))}) 
@@ -40,6 +40,10 @@ test <- test[,which(NA_d == 0)]
 ```
 The first 7 column are unimportant. so, we removed it from the datasets. Then removing all NA values of data.
 
+There are 53 variable for our prediction model.
+```{r}
+colnames(train)
+```
 ## Cross Validation
 
 Data Partition is achieved by splitting the training data into a test set and a training set. 80% training set and 20% testing set using the following:
@@ -65,7 +69,7 @@ test1$classe <- testing$classe
 ```
 
 ## Removal of zero variance
-Check for near zero variance.
+Check for near zero variance. Removing all data which are near to zero covariance.
 
 ```{r}
 nzVar <- nearZeroVar(train1, saveMetrics=TRUE)
@@ -119,11 +123,13 @@ Now we run final prediction model on full datasets. In random forest the error d
 ```{r}
 finalRF<-randomForest(as.factor(train$classe) ~.,data = train,importance = TRUE)
 print(plot(finalRF,main="Error vs No. of trees"))
+```
+
+## Final prediction on test datasets
+```{r }
 finalRF.pred<-predict(finalRF,test)
 finalRF.pred
 ```
-
-
 ### Variable Importance
 ```{r }
 print(plot(varImp(finalRF, scale = FALSE)))
