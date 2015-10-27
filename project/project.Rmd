@@ -13,9 +13,10 @@ library(randomForest)
 registerDoMC(cores = 4)
 setwd("/Users/bikash/repos/Coursera-Practical-Machine-Learning/project/")
 ```
-First step is to process the data
-1.  Read the data.
-1.  Remove excel division error strings `#DIV/0!` and replace with `NA` values.
+First step is to load and process the data,
+
+1.  Read the data using read.csv() function.
+1.  Remove  `#DIV/0!` string in excel and replace with `NA` values.
 1.  Convert empty strings to `NA` values.
 
 ```{r loaddata}
@@ -26,9 +27,9 @@ test <- read.csv('pml-testing.csv',header=TRUE,stringsAsFactors = F,na.strings=c
 
 ## Feature Selection
 
-The next task is to explore the data and determine what is likely useful information.  An important goal of any model to generalize well with unseen data.  Given this,
+This is an important and useful step need to select the required features. An important goal of any model is to select the important features and to generalize well. The first 7 column are unimportant. so, it is removed from the datasets. Then removing all NA values of data. Given this,
 
-1.  Any features that contained NA values should be removed.
+1.  Remove features that contained NA values.
 1.  Some columns are dropped as any correlation that exists would likely be spurious and therefore cause the model to perform poorly.
 ```{r}
 train<-train[,-seq(1:7)]
@@ -37,28 +38,25 @@ NA_d <- apply(train,2,function(x) {sum(is.na(x))})
 train <- train[,which(NA_d == 0)]
 NA_d <- apply(test,2,function(x) {sum(is.na(x))}) 
 test <- test[,which(NA_d == 0)]
+dim(train)
 ```
-The first 7 column are unimportant. so, we removed it from the datasets. Then removing all NA values of data.
 
-There are 53 variable for our prediction model.
+There are 53 variable for our prediction model. These variable are listed as below
 ```{r}
 colnames(train)
 ```
 ## Cross Validation
-
 Data Partition is achieved by splitting the training data into a test set and a training set. 80% training set and 20% testing set using the following:
 
 ```{r}
 data_part <- createDataPartition(y=train$classe, p=0.80, list=FALSE )
 training <- train[data_part,]
 testing <- train[-data_part,]
-
 ```
 The data was partioned by the `classe` variable to ensure the training set and test set contain examples of each class.
 
-
-## PreProcess
-Preprocess the prediction variables by centering and scaling.
+## PreProcess the split datasets 
+Preprocess the datasets by centering and scaling. 53rd variable is classe variable. So, at last we added classe vairable back.
 
 ```{r}
 preProc<-preProcess(training[,-53])
@@ -68,26 +66,16 @@ train1$classe <- training$classe
 test1$classe <- testing$classe
 ```
 
-## Removal of zero variance
-Check for near zero variance. Removing all data which are near to zero covariance.
 
-```{r}
-nzVar <- nearZeroVar(train1, saveMetrics=TRUE)
-if (any(nzVar$nzv)) nzVar else message("No variables with near zero variance")
-train1 <- train1[,nzVar$nzv==FALSE]
-nzVar <- nearZeroVar(test1, saveMetrics=TRUE)
-if (any(nzVar$nzv)) nzVar else message("No variables with near zero variance")
-test1 <- test1[,nzVar$nzv==FALSE]
-```
+## Out of Sample error:
+The random forest model was initially used to prediction. We have created error estimation at first to check whether the random forest accuracy can be achived or not?
 
-## Prediction
-
-The random forest model was initially used to prediction. We have created error estimation at first to check whether the random forest accuracy can be achived or not.
-
-Running random forest on 80% training data and 20% testing data.
+Running random forest on partition data  (80% training data and 20% testing data).
 ```{r}
 RF<-randomForest(as.factor(training$classe) ~.,data = training[,-53],importance = TRUE)
 pred_rf<-predict(RF,testing)
+varImp <- varImp(RF)
+plot(varImp, main = "Variable Importance")
 ```
 
 ```{r}
@@ -96,10 +84,11 @@ CM
 CM$overall  
 ```
 
+The accuracy of the model is 99.5%. 
 
 Now, run the same model for preprocessed data
 ```{r}
-processRF<-randomForest(as.factor(train1$classe) ~.,data = train1[,predVar],importance = TRUE)
+processRF<-randomForest(as.factor(train1$classe) ~.,data = train1[,-53],importance = TRUE)
 predictRF<-predict(processRF,test1)
 ```
 
@@ -110,19 +99,17 @@ CM1$overall
 ```
 
 
-
-## Calculate accuracy percentage
+The error percentage is very low in randomforest.
 ```{r}
 CM$overall[1]-CM1$overall[1] 
 ```
+We can observe a high accuracy using randomForest model which is nearly 99.5%. The out-of-sample error rate is 0.05%. Hence we proceed further using random forest in our final prediction. 
 
-
-### Final Prediction model
-Now we run final prediction model on full datasets. In random forest the error does decrease with the number of trees. The following plot shows the training error vs number of trees.
+### Final Prediction model.
+Now we run final prediction model on complete datasets. In random forest the error does decrease with the number of trees. 
 
 ```{r}
-finalRF<-randomForest(as.factor(train$classe) ~.,data = train,importance = TRUE)
-print(plot(finalRF,main="Error vs No. of trees"))
+finalRF<-randomForest(as.factor(train$classe) ~.,data = train[,-53],importance = TRUE)
 ```
 
 ## Final prediction on test datasets
@@ -140,12 +127,12 @@ The figure shows the importance variable used for classe (A,B,C,D,E).
 
 
 ## Conclusion
-
-The random forest algorithm appears to fit very well for predicting activities from accelerometers measurements.
-
+From the above evalution, random forest algorithm appears to fit perfect for accelerometers measurements. Out bag error is very low in random forest.
 
 
-## Submission of programming assignment for 20 different test cases is explained below:
+
+
+## Submission of programming assignment in Cousera:
 Code is provided by Coursera. Using this code and prediction result from the above results.
 ```{r }
 pml_write_files = function(x){
@@ -163,3 +150,5 @@ Converting prediction result to character in 20 different test cases and using c
 ```{r }
 pml_write_files( as.character(finalRF.pred))
 ```
+
+
