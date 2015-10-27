@@ -74,8 +74,8 @@ Running random forest on partition data  (80% training data and 20% testing data
 ```{r}
 RF<-randomForest(as.factor(training$classe) ~.,data = training[,-53],importance = TRUE)
 pred_rf<-predict(RF,testing)
-varImp <- varImp(RF)
-plot(varImp, main = "Variable Importance")
+#varImp <- varImp(RF)
+#plot(varImp, main = "Variable Importance")
 ```
 
 ```{r}

@@ -113,11 +113,9 @@ Running random forest on partition data  (80% training data and 20% testing data
 ```r
 RF<-randomForest(as.factor(training$classe) ~.,data = training[,-53],importance = TRUE)
 pred_rf<-predict(RF,testing)
-varImp <- varImp(RF)
-plot(varImp, main = "Variable Importance")
+#varImp <- varImp(RF)
+#plot(varImp, main = "Variable Importance")
 ```
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
 
 ```r
@@ -130,33 +128,33 @@ CM
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 1115    2    0    0    0
-##          B    1  756    5    0    0
-##          C    0    1  678    6    0
-##          D    0    0    1  637    0
-##          E    0    0    0    0  721
+##          A 1116    3    0    0    0
+##          B    0  754    2    0    0
+##          C    0    2  682    5    0
+##          D    0    0    0  636    1
+##          E    0    0    0    2  720
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.9959          
-##                  95% CI : (0.9934, 0.9977)
+##                Accuracy : 0.9962          
+##                  95% CI : (0.9937, 0.9979)
 ##     No Information Rate : 0.2845          
 ##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
-##                   Kappa : 0.9948          
+##                   Kappa : 0.9952          
 ##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9991   0.9960   0.9912   0.9907   1.0000
-## Specificity            0.9993   0.9981   0.9978   0.9997   1.0000
-## Pos Pred Value         0.9982   0.9921   0.9898   0.9984   1.0000
-## Neg Pred Value         0.9996   0.9991   0.9981   0.9982   1.0000
+## Sensitivity            1.0000   0.9934   0.9971   0.9891   0.9986
+## Specificity            0.9989   0.9994   0.9978   0.9997   0.9994
+## Pos Pred Value         0.9973   0.9974   0.9898   0.9984   0.9972
+## Neg Pred Value         1.0000   0.9984   0.9994   0.9979   0.9997
 ## Prevalence             0.2845   0.1935   0.1744   0.1639   0.1838
-## Detection Rate         0.2842   0.1927   0.1728   0.1624   0.1838
-## Detection Prevalence   0.2847   0.1942   0.1746   0.1626   0.1838
-## Balanced Accuracy      0.9992   0.9971   0.9945   0.9952   1.0000
+## Detection Rate         0.2845   0.1922   0.1738   0.1621   0.1835
+## Detection Prevalence   0.2852   0.1927   0.1756   0.1624   0.1840
+## Balanced Accuracy      0.9995   0.9964   0.9975   0.9944   0.9990
 ```
 
 ```r
@@ -165,7 +163,7 @@ CM$overall
 
 ```
 ##       Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull 
-##      0.9959215      0.9948409      0.9933852      0.9976670      0.2844762 
+##      0.9961764      0.9951631      0.9937014      0.9978584      0.2844762 
 ## AccuracyPValue  McnemarPValue 
 ##      0.0000000            NaN
 ```
@@ -190,33 +188,33 @@ CM1
 ## 
 ##           Reference
 ## Prediction    A    B    C    D    E
-##          A 1115    2    0    0    0
-##          B    0  756    7    0    0
-##          C    0    1  676    8    0
-##          D    0    0    1  635    0
-##          E    1    0    0    0  721
+##          A 1116    4    0    0    0
+##          B    0  754    3    0    0
+##          C    0    1  680    6    0
+##          D    0    0    1  635    1
+##          E    0    0    0    2  720
 ## 
 ## Overall Statistics
 ##                                           
-##                Accuracy : 0.9949          
-##                  95% CI : (0.9921, 0.9969)
+##                Accuracy : 0.9954          
+##                  95% CI : (0.9928, 0.9973)
 ##     No Information Rate : 0.2845          
 ##     P-Value [Acc > NIR] : < 2.2e-16       
 ##                                           
-##                   Kappa : 0.9936          
+##                   Kappa : 0.9942          
 ##  Mcnemar's Test P-Value : NA              
 ## 
 ## Statistics by Class:
 ## 
 ##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9991   0.9960   0.9883   0.9876   1.0000
-## Specificity            0.9993   0.9978   0.9972   0.9997   0.9997
-## Pos Pred Value         0.9982   0.9908   0.9869   0.9984   0.9986
-## Neg Pred Value         0.9996   0.9991   0.9975   0.9976   1.0000
+## Sensitivity            1.0000   0.9934   0.9942   0.9876   0.9986
+## Specificity            0.9986   0.9991   0.9978   0.9994   0.9994
+## Pos Pred Value         0.9964   0.9960   0.9898   0.9969   0.9972
+## Neg Pred Value         1.0000   0.9984   0.9988   0.9976   0.9997
 ## Prevalence             0.2845   0.1935   0.1744   0.1639   0.1838
-## Detection Rate         0.2842   0.1927   0.1723   0.1619   0.1838
-## Detection Prevalence   0.2847   0.1945   0.1746   0.1621   0.1840
-## Balanced Accuracy      0.9992   0.9969   0.9928   0.9936   0.9998
+## Detection Rate         0.2845   0.1922   0.1733   0.1619   0.1835
+## Detection Prevalence   0.2855   0.1930   0.1751   0.1624   0.1840
+## Balanced Accuracy      0.9993   0.9962   0.9960   0.9935   0.9990
 ```
 
 ```r
@@ -225,7 +223,7 @@ CM1$overall
 
 ```
 ##       Accuracy          Kappa  AccuracyLower  AccuracyUpper   AccuracyNull 
-##      0.9949019      0.9935510      0.9921373      0.9968832      0.2844762 
+##      0.9954117      0.9941955      0.9927581      0.9972785      0.2844762 
 ## AccuracyPValue  McnemarPValue 
 ##      0.0000000            NaN
 ```
@@ -238,8 +236,8 @@ CM$overall[1]-CM1$overall[1]
 ```
 
 ```
-##    Accuracy 
-## 0.001019628
+##     Accuracy 
+## 0.0007647209
 ```
 We can observe a high accuracy using randomForest model which is nearly 99.5%. The out-of-sample error rate is 0.05%. Hence we proceed further using random forest in our final prediction. 
 
