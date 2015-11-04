@@ -85,8 +85,7 @@ pml_write_files = function(x){
   }
 }
 
-
-pml_write_files( as.character(finalRF.pred))
+pml_write_files(as.character(finalRF.pred))
 
 
 
