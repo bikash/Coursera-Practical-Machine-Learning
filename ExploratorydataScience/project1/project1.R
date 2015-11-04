@@ -16,8 +16,7 @@ set.seed(123)
 ##q1: The dataset has 2,075,259 rows and 9 columns. First calculate a rough estimate of 
 #how much memory the dataset will require in memory before reading into R. Make sure your computer has enough memory (most modern computers should be fine).
 ########################################################################################################################
-data <- read.table("household_power_consumption.txt", header=TRUE, sep=";", colClasses=c("character", "character", rep("numeric",7)), na="?")
-
+data <- read.table("household_power_consumption.txt", header=TRUE, sep=";", stringsAsFactors=FALSE, na="?")
 str(data) #2075259 obs. of  9 variables:
 
 
