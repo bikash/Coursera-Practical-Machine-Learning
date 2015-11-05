@@ -99,4 +99,17 @@ subset.NEI.Baltimore <- NEI[NEI$fips=="24510" & NEI$type=="ON-ROAD",  ]
 agg.TotalByYear.los <- aggregate(Emissions ~ year, subset.NEI.los, sum)
 agg.TotalByYear.Baltimore <- aggregate(Emissions ~ year, subset.NEI.Baltimore, sum)
 
+agg.TotalByYear.los$city<-"Los Angeles, CA"
+agg.TotalByYear.Baltimore$city<-"Baltimore, MD"
+# Combine the two subsets into one data frame
+data.comb <- rbind(agg.TotalByYear.los, agg.TotalByYear.Baltimore) 
+
+ggplot(data=data.comb, aes(x=factor(year), y=Emissions, fill=city)) +
+  geom_bar(stat="identity", position=position_dodge()) +
+  xlab("year") +
+  ylab(expression("Total PM2.5 Emissions")) +
+  ggtitle('Compare Emissions in two Cities')
+
+
+
 
