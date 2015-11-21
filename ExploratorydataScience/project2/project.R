@@ -12,7 +12,7 @@ head(NEI)
 str(SCC) #11717 obs. of  15 variables:
 
 
-#10-year period 1999–2008
+#10-year period 1999???2008
 data <- subset(NEI, subset=(year >= "1999" & year <= "2008"))
 str(data) #6497651 obs. of  6 variables:
 
@@ -21,10 +21,10 @@ str(data) #6497651 obs. of  6 variables:
 #make a plot showing the total PM2.5 emission from all sources for each of the years 1999, 2002, 2005, and 2008.
 ########################################################################################################################
 aggregatedTotalByYear <- aggregate(Emissions ~ year, NEI, sum)
-
+png("plot1.png", width = 480, height = 480)
 barplot(height=aggregatedTotalByYear$Emissions, names.arg=aggregatedTotalByYear$year, xlab="years", 
         ylab=expression('Total PM2.5 emission'),main=expression('Total PM2.5 emissions at various years'))
-
+dev.off()
 ########################################################################################################################
 #Have total emissions from PM2.5 decreased in the 
 #Baltimore City, Maryland (fips == "24510") from 1999 to 2008? Use the base plotting system to make a plot answering this question.
@@ -37,8 +37,8 @@ barplot(height=agg.TotalByYear$Emissions, names.arg=agg.TotalByYear$year, xlab="
 
 ########################################################################################################################
 # Of the four types of sources indicated by the type (point, nonpoint, onroad, nonroad) variable, 
-# which of these four sources have seen decreases in emissions from 1999–2008 for Baltimore City? 
-# Which have seen increases in emissions from 1999–2008? 
+# which of these four sources have seen decreases in emissions from 1999???2008 for Baltimore City? 
+# Which have seen increases in emissions from 1999???2008? 
 # Use the ggplot2 plotting system to make a plot answer this question.
 ########################################################################################################################
 library(ggplot2)
@@ -54,7 +54,7 @@ ggplot(data=agg.TotalByYear, aes(x=year, y=Emissions, group = type, colour = Typ
 
 
 ########################################################################################################################
-#Across the United States, how have emissions from coal combustion-related sources changed from 1999–2008?
+#Across the United States, how have emissions from coal combustion-related sources changed from 1999???2008?
 ########################################################################################################################
 ## merge
 NEI.SCC <- merge(NEI, SCC, by="SCC")
@@ -73,7 +73,7 @@ ggplot(data=agg.TotalByYear, aes(x=factor(year), y=Emissions, fill=year)) +
 
 
 ########################################################################################################################
-#How have emissions from motor vehicle sources changed from 1999–2008 in Baltimore City?
+#How have emissions from motor vehicle sources changed from 1999???2008 in Baltimore City?
 ########################################################################################################################
 
 
